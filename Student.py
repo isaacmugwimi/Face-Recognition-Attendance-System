@@ -1,9 +1,10 @@
-from tkinter import W, Frame, ttk
+from tkinter import RIDGE, W, Frame, ttk
 from tkinter.font import Font
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
 from tkinter import Entry, Tk, Label, Button, LabelFrame
 from customtkinter import CTk, CTkLabel, CTkFrame
+import tkinter as tk
 
 
 def resize_method(imagePath, imageSize):
@@ -370,9 +371,9 @@ class Student:
             anchor="center",
             foreground="white",
             background="darkcyan",
-            font=("ubuntu", 10, "bold"),activebackground="orange",
+            font=("ubuntu", 10, "bold"),
+            activebackground="orange",
             activeforeground="white",
-        
         )
         self.saveButton.grid(row=0, column=0, padx=(1, 5), pady=(10, 0))
 
@@ -383,9 +384,9 @@ class Student:
             anchor="center",
             foreground="white",
             background="darkcyan",
-            font=("ubuntu", 10, "bold"),activebackground="orange",
+            font=("ubuntu", 10, "bold"),
+            activebackground="orange",
             activeforeground="white",
-        
         )
         self.updateButton.grid(row=0, column=1, padx=(0, 5), pady=(10, 0))
 
@@ -396,9 +397,9 @@ class Student:
             anchor="center",
             foreground="white",
             background="darkcyan",
-            font=("ubuntu", 10, "bold"),activebackground="orange",
+            font=("ubuntu", 10, "bold"),
+            activebackground="orange",
             activeforeground="white",
-        
         )
         self.deleteButton.grid(row=0, column=2, padx=(0, 5), pady=(10, 0))
 
@@ -412,7 +413,6 @@ class Student:
             font=("ubuntu", 10, "bold"),
             activebackground="orange",
             activeforeground="white",
-        
         )
         self.resetButton.grid(row=0, column=3, padx=(0, 1), pady=(10, 0))
 
@@ -458,9 +458,193 @@ class Student:
         )
         self.studentDetailsFrame.place(x=550, y=10, width=680, height=580)
 
+        # adding the top image in the right frame
+        imageSize = (660, 140)
+        imagePath = "college_images/student.jpg"
+        self.studentphoto2 = resize_method(imagePath, imageSize)
+
+        self.studentLabelPhoto = Label(
+            self.studentDetailsFrame, image=self.studentphoto2, bd=None
+        )
+        self.studentLabelPhoto.grid(row=0, column=0, padx=5)
+
+        # adding the next label frame to hold student details
+
+        self.studentDetailsMainFrame = LabelFrame(
+            self.studentDetailsFrame,
+            text="view student details & search system",
+            font=frameFont,
+            fg="magenta",
+            bg="darkblue",
+        )
+        self.studentDetailsMainFrame.grid(row=1, column=0, padx=5)
+
+        # adding the seacrh by label
+        self.searchLabel = Label(
+            self.studentDetailsMainFrame,
+            text="Search By:",
+            bg="#F9040A",
+            font=("ubuntu", 12, "bold"),
+            fg="white",
+        )
+        self.searchLabel.grid(row=0, column=0, padx=10, pady=10)
+
+        # adding option Combobox
+        self.optionCombobox = Combobox(
+            self.studentDetailsMainFrame,
+            state="readonly",
+            values=["Select", "Roll_No", "Phone_No"],
+            font=("ubuntu", 10, "bold"),
+            width=15,
+            foreground="darkblue",
+        )
+        self.optionCombobox.current(0)
+        self.optionCombobox.grid(row=0, column=1, padx=5, pady=10, sticky=W)
+
+        # adding search Entry
+        self.searchEntry = Entry(
+            self.studentDetailsMainFrame,
+            width=15,
+            borderwidth=0,
+            bg="darkgrey",
+            fg="darkblue",
+            font=("ubuntu", 11, "bold"),
+        )
+        self.searchEntry.grid(row=0, column=2, padx=5, pady=10, ipady=2)
+
+        # adding the search and show all button
+        self.searchButton = Button(
+            self.studentDetailsMainFrame,
+            text="SEARCH",
+            fg="white",
+            bg="blue",
+            width=12,
+            font=("Ubuntu", 10, "bold"),
+        )
+        self.searchButton.grid(row=0, column=3, padx=5, pady=10)
+
+        self.showAllButton = Button(
+            self.studentDetailsMainFrame,
+            text="SHOW ALL",
+            fg="white",
+            bg="blue",
+            width=14,
+            font=("Ubuntu", 10, "bold"),
+        )
+        self.showAllButton.grid(row=0, column=4, padx=5, pady=10)
+
+        # **********************************adding the tables Frame**********************************
+        self.tablesframe = Frame(
+            self.studentDetailsFrame,
+            bd=2,
+            bg="white",
+            width=660,
+            height=300,
+            relief=RIDGE,
+        )
+        # self.tablesframe.grid(row=2, column=0, padx=5, pady=13)
+        self.tablesframe.place(
+            x=5,
+            y=230,
+            width=660,
+            height=300,
+        )
+
+        #  adding the x scroll bar
+
+        scroll_x = ttk.Scrollbar(self.tablesframe, orient="horizontal")
+        scroll_y = ttk.Scrollbar(self.tablesframe, orient="vertical")
+
+        # defining the table
+        self.student_table = ttk.Treeview(
+            self.tablesframe,
+            columns=(
+                "department",
+                "course",
+                "year",
+                "semester",
+                "studentID",
+                "student_Name",
+                "roll_No",
+                "gender",
+                "dob",
+                "email",
+                "phone",
+                "address",
+                "photo",
+            ),
+            xscrollcommand=scroll_x.set,
+            yscrollcommand=scroll_y.set,
+            show="headings",
+        )
+
+        scroll_x.pack(side="bottom", fill="x")
+        scroll_y.pack(side="right", fill="y")
+        scroll_x.config(command=self.student_table.xview)
+        scroll_y.config(command=self.student_table.yview)
+
+        # styling the heading of the columns in the table
+        style = ttk.Style(self.window)
+        style.theme_use("clam")
+
+        style.configure("Treeview", borderwidth=1, relief="solid")
+
+        style.configure(
+            "Treeview.Heading",
+            font=("Ubuntu", 10, "bold"),
+            foreground="white",
+            background="darkcyan",
+            borderwidth=1,
+            relief="solid",
+            
+        )
+        style.map(
+            "Treeview.Heading",
+            background=[("active", "orange")],
+            foreground=[("active", "black")],
+        )
+        try:
+            style.configure("Treeview", bordercolor="blue")
+        except tk as e:
+            print("The active theme does not support changing border color:", e)
+
+        # adding the table's headings
+        self.student_table.heading("department", text="Department")
+        self.student_table.heading("course", text="Course")
+        self.student_table.heading("year", text="Year")
+        self.student_table.heading("semester", text="Semester")
+        self.student_table.heading("studentID", text="Student ID")
+        self.student_table.heading("student_Name", text="Student Name")
+        self.student_table.heading("roll_No", text="Roll No")
+        self.student_table.heading("gender", text="Gender")
+        self.student_table.heading("dob", text="DOB")
+        self.student_table.heading("email", text="Email")
+        self.student_table.heading("phone", text="Phone")
+        self.student_table.heading("address", text="Address")
+        self.student_table.heading("photo", text="Photo Sample Status")
+        # self.student_table["show"]="headings"
+
+        # configuring the width of the columns
+        self.student_table.column("department", stretch=False,  width=100)
+        self.student_table.column("course", stretch=False,  width=100)
+        self.student_table.column("year", stretch=False,  width=100)
+        self.student_table.column("semester", stretch=False,  width=100)
+        self.student_table.column("studentID", stretch=False,  width=100)
+        self.student_table.column("student_Name", stretch=False,  width=150)
+        self.student_table.column("roll_No", stretch=False,  width=100)
+        self.student_table.column("gender", stretch=False,  width=100)
+        self.student_table.column("dob", stretch=False,  width=100)
+        self.student_table.column("email", stretch=False,  width=120)
+        self.student_table.column("phone", stretch=False,  width=100)
+        self.student_table.column("address", stretch=False,  width=100)
+        self.student_table.column("photo", stretch=False,  width=150)
+
+        self.student_table.pack(fill="both", expand=1)
+
     # **************************************************************************************************
 
     def __init__(self):
+        
         self.window = CTk()
         self.window.geometry("1260x1024+0+0")
         self.mainMethod()

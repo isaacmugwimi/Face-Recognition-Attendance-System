@@ -1,0 +1,16 @@
+from tkinter import Tk
+import tkinter as tk
+
+
+class Trial:
+    def mainMethod(self):
+        pass
+
+    def __init__(self):
+        self.app = Tk()
+        self.app.geometry("400x400")
+        self.app.mainloop()
+
+
+if __name__ == "__main__":
+    Trial()
