@@ -1,14 +1,17 @@
+import tkinter
 from PIL import Image, ImageTk
 from tkinter import Tk, Label, Button, Toplevel
 from customtkinter import *
+import tk
 from Student import Student
-# from tempCodeRunnerFile import Trial
+
+# from Animal import Student
 
 
 
 def resize_method(imagePath, imageSize):
     currentImage = Image.open(imagePath)
-    resizedImage = currentImage.resize(imageSize)
+    resizedImage = currentImage.resize(imageSize,Image.LANCZOS)
     return ImageTk.PhotoImage(resizedImage)
 
 
@@ -224,6 +227,7 @@ class Face_Recognition_System:
             height=180,
             cursor="hand2",
             border=None,
+            command=self.open_image
         )
         self.photosButton.place(x=400, y=370)
 
@@ -239,6 +243,7 @@ class Face_Recognition_System:
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
             activeforeground="white",
+            command=self.open_image
         )
         self.photosBtn1text.place(x=400, y=550, width=186, height=30)
 
@@ -302,26 +307,28 @@ class Face_Recognition_System:
         )
         self.exitBtn1text.place(x=970, y=550, width=186, height=30)
 
-    def __init__(self):
-        # self.app=None
+    def __init__(self, root):
+        self.root = root
         
-        
-
-
-        self.root = CTk()
         self.root.wm_overrideredirect(True)
         self.root.geometry("1260x790+0+0")
         self.root.title("Face Recognition System")
         self.mainMethod()
-        self.root.mainloop()
+        
        
     # **********************************Functions buttons*********************************
 
     def student_details_method(self):
-        self.new_Window=Toplevel(self.root)
-        self.app=Student()
+        self.app = Student(self.root)
+    
+    def open_image(self):
+        os.startfile("data")
+        
 
 
 if __name__ == "__main__":
-    main_Application = Face_Recognition_System()
+    root=CTk()
+
+    Face_Recognition_System(root)
+    root.mainloop()
     

@@ -1,10 +1,18 @@
-from tkinter import RIDGE, W, Frame, ttk
+import os
+from tkinter import *
+import re
+from tkinter import RIDGE, W, Frame, StringVar, messagebox, ttk
 from tkinter.font import Font
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
 from tkinter import Entry, Tk, Label, Button, LabelFrame
 from customtkinter import CTk, CTkLabel, CTkFrame
 import tkinter as tk
+import customtkinter
+from tkcalendar import DateEntry
+import Database
+import cv2
+import pymysql
 
 
 def resize_method(imagePath, imageSize):
@@ -13,28 +21,54 @@ def resize_method(imagePath, imageSize):
     return ImageTk.PhotoImage(resizedImage)
 
 
+def is_email_valid(email):
+    email_regex = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+    return re.match(email_regex, email)
+
+
 class Student:
+
     def mainMethod(self):
+
+        # -------------------- VARIABLES ---------------------
+        self.var_dep = StringVar()
+        self.var_course = StringVar()
+        self.var_year = StringVar()
+        self.var_semester = StringVar()
+        self.var_studentID = StringVar()
+        self.var_student_Name = StringVar()
+        self.var_roll_No = StringVar()
+        self.var_gender = StringVar()
+        self.var_dob = StringVar()
+        self.var_email = StringVar()
+        self.var_phone = StringVar()
+        self.var_address = StringVar()
+        self.var_photo = StringVar()
+        # ----------------------------------------------------
+
         # first Image
-        imagePath = "college_images/students1.jpg"
+
         imageSize = (420, 130)
-        self.photoImage = resize_method(imagePath, imageSize)
-        self.f_label = Label(self.window, image=self.photoImage)
-        self.f_label.place(x=0, y=0, width=420, height=130)
+        self.photoImage = resize_method("college_images/students1.jpg", imageSize)
+        Label(self.window, image=self.photoImage, text="").place(
+            x=0, y=0, width=420, height=130
+        )
 
         # second Image
-        imagePath = "college_images/facialrecognition.png"
         imageSize = (420, 130)
-        self.photoImage1 = resize_method(imagePath, imageSize)
-        self.f_label = Label(self.window, image=self.photoImage1)
-        self.f_label.place(x=420, y=0, width=420, height=130)
+        self.photoImage1 = resize_method(
+            "college_images/facialrecognition.png", imageSize
+        )
+        Label(self.window, image=self.photoImage1, text="").place(
+            x=420, y=0, width=420, height=130
+        )
 
-        # Third Image
-        imagePath = "college_images/students2.jpg"
+        # # Third Image
         imageSize = (420, 130)
-        self.photoImage2 = resize_method(imagePath, imageSize)
-        self.f_label = Label(self.window, image=self.photoImage2)
-        self.f_label.place(x=840, y=0, width=420, height=130)
+        self.photoImage2 = resize_method("college_images/students2.jpg", imageSize)
+        Label(self.window, image=self.photoImage2, text="").place(
+            x=840, y=0, width=420, height=130
+        )
 
         # Background Image
         imagePath = "college_images/wp2551980.jpg"
@@ -60,6 +94,21 @@ class Student:
             x=-2,
             y=-2,
         )
+        self.backButton = customtkinter.CTkButton(
+            self.bgimagelabel,
+            text="Back",
+            command=self.back_method,
+            text_color="#FFFFFF",
+            bg_color="#FFF",
+            fg_color="#36719F",
+            height=25,
+            corner_radius=25,
+            width=130,
+            cursor="hand2",
+            hover_color="#FF4505",
+            font=("arial", 14),
+        )
+        self.backButton.place(x=1170, y=-2)
 
         # creating the Main Frame inside the "self.bgImagelabel"
         self.student_Main_Frame = CTkFrame(
@@ -112,6 +161,7 @@ class Student:
         )
 
         # courseInfoFrame details
+        # Department
         self.departmentLabel = Label(
             self.courseInfoFrame, text="Department:", font=("ubuntu", 10)
         )
@@ -119,6 +169,7 @@ class Student:
 
         self.departmentCombobox = Combobox(
             self.courseInfoFrame,
+            textvariable=self.var_dep,
             values=["Select department", "BScIT", "BBIT", "CS", "SE"],
             state="readonly",
             foreground="darkblue",
@@ -128,6 +179,7 @@ class Student:
         self.departmentCombobox.current(0)
         self.departmentCombobox.grid(row=0, column=1, padx=(0, 10), pady=(10, 0))
 
+        # Course
         self.coursesLabel = Label(
             self.courseInfoFrame, text="Courses:", font=("ubuntu", 10)
         )
@@ -135,6 +187,7 @@ class Student:
 
         self.coursesCombobox = Combobox(
             self.courseInfoFrame,
+            textvariable=self.var_course,
             values=["Select Courses", "BScIT", "BBIT", "CS", "SE"],
             state="readonly",
             foreground="darkblue",
@@ -144,6 +197,7 @@ class Student:
         self.coursesCombobox.current(0)
         self.coursesCombobox.grid(row=0, column=3, padx=(0, 10), pady=(10, 0))
 
+        # Year
         self.yearLabel = Label(
             self.courseInfoFrame,
             text="Year:",
@@ -153,6 +207,7 @@ class Student:
 
         self.yearCombobox = Combobox(
             self.courseInfoFrame,
+            textvariable=self.var_year,
             values=["Select Year", "I", "II", "III", "IV"],
             state="readonly",
             foreground="darkblue",
@@ -162,6 +217,7 @@ class Student:
         self.yearCombobox.current(0)
         self.yearCombobox.grid(row=1, column=1, padx=(0, 10), pady=(10, 10), sticky=W)
 
+        # Semester
         self.semesterLabel = Label(
             self.courseInfoFrame, text="Semester:", font=("ubuntu", 10)
         )
@@ -169,6 +225,7 @@ class Student:
 
         self.semesterCombobox = Combobox(
             self.courseInfoFrame,
+            textvariable=self.var_semester,
             values=["Select Semester", "I", "II", "III"],
             state="readonly",
             foreground="darkblue",
@@ -189,11 +246,9 @@ class Student:
             border=3,
             font=("ubuntu", 10, "bold"),
         )
-        self.studentClassInfoFrame.grid(
-            row=2,
-            column=0,
-        )
+        self.studentClassInfoFrame.grid(row=2, column=0, sticky="nsew")
 
+        # ID no
         self.studentIdNoLabel = Label(
             self.studentClassInfoFrame,
             text="Id No:",
@@ -201,17 +256,20 @@ class Student:
         )
         self.studentIdNoLabel.grid(row=0, column=0, padx=(10, 0), pady=(5, 5), sticky=W)
 
-        self.idNoEntry = Entry(
+        self.studentidNoEntry = Entry(
             self.studentClassInfoFrame,
+            textvariable=self.var_studentID,
             width=25,
             fg="darkblue",
             borderwidth=0,
             bg="darkgrey",
             font=("ubuntu", 10, "bold"),
         )
-        self.idNoEntry.grid(
+        self.studentidNoEntry.grid(
             row=0, column=1, padx=(0, 10), pady=(5, 5), ipady=2, sticky=W
         )
+
+        # Student Name
 
         self.studentNameLabel = Label(
             self.studentClassInfoFrame,
@@ -220,15 +278,16 @@ class Student:
         )
         self.studentNameLabel.grid(row=0, column=2, padx=(10, 0), pady=(5, 5), sticky=W)
 
-        self.studentNameLabelEntry = Entry(
+        self.studentNameEntry = Entry(
             self.studentClassInfoFrame,
+            textvariable=self.var_student_Name,
             width=25,
             borderwidth=0,
             bg="darkgrey",
             fg="darkblue",
             font=("ubuntu", 10, "bold"),
         )
-        self.studentNameLabelEntry.grid(
+        self.studentNameEntry.grid(
             row=0,
             column=3,
             padx=(0, 15),
@@ -236,6 +295,7 @@ class Student:
             ipady=2,
         )
 
+        # Gender
         self.genderLabel = Label(
             self.studentClassInfoFrame,
             text="Gender:",
@@ -245,7 +305,8 @@ class Student:
 
         self.genderCombobox = Combobox(
             self.studentClassInfoFrame,
-            values=["Male", "Female", "Other"],
+            textvariable=self.var_gender,
+            values=["Select Gender", "Male", "Female", "Other"],
             width=25,
             state="readonly",
             foreground="darkblue",
@@ -256,6 +317,7 @@ class Student:
             row=1, column=1, padx=(0, 10), pady=(5, 5), ipady=2, sticky=W
         )
 
+        # DOB
         self.dobLabel = Label(
             self.studentClassInfoFrame,
             text="DOB:",
@@ -263,22 +325,31 @@ class Student:
         )
         self.dobLabel.grid(row=1, column=2, padx=(10, 0), pady=(5, 5), sticky=W)
 
-        self.dobLabelEntry = Entry(
+        self.dobEntry = DateEntry(
             self.studentClassInfoFrame,
+            textvariable=self.var_dob,
+            background="dark blue",
+            foreground="white",
             width=25,
             borderwidth=0,
-            bg="darkgrey",
-            fg="darkblue",
-            font=("ubuntu", 10, "bold"),
+            font=("ubuntu", 8),
+            date_pattern="dd-MM-yyyy",
+            showweeknumbers=False,
+            year=2000,
+            selectbackground="lightblue",
+            selectforeground="black",
+            weekendforeground="red",
         )
 
-        self.dobLabelEntry.grid(
+        self.dobEntry.grid(
             row=1,
             column=3,
             padx=(0, 15),
             pady=(5, 5),
             ipady=2,
         )
+
+        # Email
 
         self.emailLabel = Label(
             self.studentClassInfoFrame,
@@ -289,6 +360,7 @@ class Student:
 
         self.emailEntry = Entry(
             self.studentClassInfoFrame,
+            textvariable=self.var_email,
             width=25,
             fg="darkblue",
             borderwidth=0,
@@ -299,6 +371,8 @@ class Student:
             row=2, column=1, padx=(0, 10), pady=(5, 5), ipady=2, sticky=W
         )
 
+        # Phone
+
         self.phoneNoLabel = Label(
             self.studentClassInfoFrame,
             text="Phone:",
@@ -306,8 +380,9 @@ class Student:
         )
         self.phoneNoLabel.grid(row=2, column=2, padx=(10, 0), pady=(5, 5), sticky=W)
 
-        self.phoneNoLabelEntry = Entry(
+        self.phoneNoEntry = Entry(
             self.studentClassInfoFrame,
+            textvariable=self.var_phone,
             width=25,
             borderwidth=0,
             bg="darkgrey",
@@ -315,7 +390,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
         )
 
-        self.phoneNoLabelEntry.grid(
+        self.phoneNoEntry.grid(
             row=2,
             column=3,
             padx=(0, 15),
@@ -323,14 +398,15 @@ class Student:
             ipady=2,
         )
 
-        self.locationLabel = Label(
+        # address
+        self.addressLabel = Label(
             self.studentClassInfoFrame,
-            text="Location:",
+            text="Address:",
             font=("ubuntu", 10),
         )
-        self.locationLabel.grid(row=3, column=0, padx=(10, 0), pady=(5, 5), sticky=W)
+        self.addressLabel.grid(row=3, column=0, padx=(10, 0), pady=(5, 5), sticky=W)
 
-        self.locationEntry = Entry(
+        self.addressEntry = Entry(
             self.studentClassInfoFrame,
             width=25,
             borderwidth=0,
@@ -339,7 +415,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
         )
 
-        self.locationEntry.grid(
+        self.addressEntry.grid(
             row=3,
             column=1,
             padx=(0, 15),
@@ -347,13 +423,44 @@ class Student:
             ipady=2,
         )
 
+        # Roll number
+        self.roll_no_Label = Label(
+            self.studentClassInfoFrame,
+            text="Roll No:",
+            font=("ubuntu", 10),
+        )
+        self.roll_no_Label.grid(row=3, column=2, padx=(10, 0), pady=(5, 5), sticky=W)
+
+        self.roll_no_Entry = Entry(
+            self.studentClassInfoFrame,
+            width=25,
+            borderwidth=0,
+            bg="darkgrey",
+            fg="darkblue",
+            font=("ubuntu", 10, "bold"),
+        )
+
+        self.roll_no_Entry.grid(
+            row=3,
+            column=3,
+            padx=(0, 15),
+            pady=(5, 5),
+            ipady=2,
+        )
+
         self.photosample = ttk.Radiobutton(
-            self.studentClassInfoFrame, text="Take Photo Sample", value="Yes"
+            self.studentClassInfoFrame,
+            variable=self.var_photo,
+            text="Take Photo Sample",
+            value="Yes",
         )
         self.photosample.grid(row=4, column=0, padx=10, columnspan=2, pady=(0, 10))
 
         self.photosample1 = ttk.Radiobutton(
-            self.studentClassInfoFrame, text="No Photo Sample", value="Yes"
+            self.studentClassInfoFrame,
+            variable=self.var_photo,
+            text="No Photo Sample",
+            value="No",
         )
         self.photosample1.grid(row=4, column=1, padx=10, columnspan=4, pady=(0, 10))
 
@@ -374,6 +481,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
             activebackground="orange",
             activeforeground="white",
+            command=self.save_to_database_method,
         )
         self.saveButton.grid(row=0, column=0, padx=(1, 5), pady=(10, 0))
 
@@ -387,6 +495,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
             activebackground="orange",
             activeforeground="white",
+            command=self.update_method,
         )
         self.updateButton.grid(row=0, column=1, padx=(0, 5), pady=(10, 0))
 
@@ -400,6 +509,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
             activebackground="orange",
             activeforeground="white",
+            command=self.delete_method,
         )
         self.deleteButton.grid(row=0, column=2, padx=(0, 5), pady=(10, 0))
 
@@ -413,6 +523,7 @@ class Student:
             font=("ubuntu", 10, "bold"),
             activebackground="orange",
             activeforeground="white",
+            command=self.reset_method,
         )
         self.resetButton.grid(row=0, column=3, padx=(0, 1), pady=(10, 0))
 
@@ -424,6 +535,7 @@ class Student:
             self.buttonsFrame2,
             text="Add Photo Sample",
             width=28,
+            command= self.generate_dataset,
             anchor="center",
             foreground="white",
             background="darkcyan",
@@ -530,6 +642,7 @@ class Student:
             bg="blue",
             width=14,
             font=("Ubuntu", 10, "bold"),
+            command=self.fetch_data,
         )
         self.showAllButton.grid(row=0, column=4, padx=5, pady=10)
 
@@ -596,7 +709,6 @@ class Student:
             background="darkcyan",
             borderwidth=1,
             relief="solid",
-            
         )
         style.map(
             "Treeview.Heading",
@@ -605,8 +717,8 @@ class Student:
         )
         try:
             style.configure("Treeview", bordercolor="blue")
-        except tk as e:
-            print("The active theme does not support changing border color:", e)
+        except tk.TclError:
+            print("The active theme does not support changing border color:")
 
         # adding the table's headings
         self.student_table.heading("department", text="Department")
@@ -625,31 +737,448 @@ class Student:
         # self.student_table["show"]="headings"
 
         # configuring the width of the columns
-        self.student_table.column("department", stretch=False,  width=100)
-        self.student_table.column("course", stretch=False,  width=100)
-        self.student_table.column("year", stretch=False,  width=100)
-        self.student_table.column("semester", stretch=False,  width=100)
-        self.student_table.column("studentID", stretch=False,  width=100)
-        self.student_table.column("student_Name", stretch=False,  width=150)
-        self.student_table.column("roll_No", stretch=False,  width=100)
-        self.student_table.column("gender", stretch=False,  width=100)
-        self.student_table.column("dob", stretch=False,  width=100)
-        self.student_table.column("email", stretch=False,  width=120)
-        self.student_table.column("phone", stretch=False,  width=100)
-        self.student_table.column("address", stretch=False,  width=100)
-        self.student_table.column("photo", stretch=False,  width=150)
-
+        self.student_table.column("department", stretch=False, width=100)
+        self.student_table.column("course", stretch=False, width=100)
+        self.student_table.column("year", stretch=False, width=100)
+        self.student_table.column("semester", stretch=False, width=100)
+        self.student_table.column("studentID", stretch=False, width=100)
+        self.student_table.column("student_Name", stretch=False, width=150)
+        self.student_table.column("roll_No", stretch=False, width=100)
+        self.student_table.column("gender", stretch=False, width=100)
+        self.student_table.column("dob", stretch=False, width=100)
+        self.student_table.column("email", stretch=False, width=120)
+        self.student_table.column("phone", stretch=False, width=100)
+        self.student_table.column("address", stretch=False, width=100)
+        self.student_table.column("photo", stretch=False, width=150)
+        self.student_table.bind(
+            "<ButtonRelease>", lambda event: self.display_data(event)
+        )
         self.student_table.pack(fill="both", expand=1)
 
     # **************************************************************************************************
 
-    def __init__(self):
-        
-        self.window = CTk()
-        self.window.geometry("1260x1024+0+0")
+    # ********************** fUNCTION DECLARATION ********************
+
+    def back_method(self):
+        self.window.destroy()
+
+    def data_insertion(self):  # for inserting data into the table...
+
+        # for data in self.student_table.get_children():
+        #     self.student_table.delete(data)
+
+        self.student_table.insert(
+            "",
+            "end",
+            values=(
+                self.department,
+                self.course_dropdown,
+                self.year,
+                self.semester,
+                self.student_id_no,
+                self.student_name,
+                self.roll_no,
+                self.gender,
+                self.selectedDate,
+                self.email,
+                self.phoneNo,
+                self.address,
+                self.var_radio,
+            ),
+        )
+
+    # reset_method
+    def reset_method(self):
+        self.departmentCombobox.current(0)
+        self.coursesCombobox.current(0)
+        self.yearCombobox.current(0)
+        self.semesterCombobox.current(0)
+        self.studentidNoEntry.delete(0, END)
+        self.studentNameEntry.delete(0, END)
+        self.roll_no_Entry.delete(0, END)
+        self.genderCombobox.current(0)
+        self.dobEntry.delete(0, END)
+        self.dobEntry.set_date("01/01/2000")
+        self.emailEntry.delete(0, END)
+        self.phoneNoEntry.delete(0, END)
+        self.addressEntry.delete(0, END)
+        self.var_photo.set("")
+
+        # clearing the table
+        for row in self.student_table.get_children():
+            self.student_table.delete(row)
+
+    def reset_method2(self):
+        self.departmentCombobox.current(0)
+        self.coursesCombobox.current(0)
+        self.yearCombobox.current(0)
+        self.semesterCombobox.current(0)
+        self.studentidNoEntry.delete(0, END)
+        self.studentNameEntry.delete(0, END)
+        self.roll_no_Entry.delete(0, END)
+        self.genderCombobox.current(0)
+        self.dobEntry.delete(0, END)
+        self.dobEntry.set_date("01/01/2000")
+        self.emailEntry.delete(0, END)
+        self.phoneNoEntry.delete(0, END)
+        self.addressEntry.delete(0, END)
+        self.var_photo.set("")
+
+    # Display Data method
+    def display_data(self, event):
+        selected_item = self.student_table.focus()
+        if selected_item:
+            row = self.student_table.item(selected_item)["values"]
+            self.reset_method2()
+            self.departmentCombobox.set(row[0])
+            self.coursesCombobox.set(row[1])
+            self.yearCombobox.set(row[2])
+            self.semesterCombobox.set(row[3])
+            self.studentidNoEntry.insert(0, row[4])
+            self.studentNameEntry.insert(0, row[5])
+            self.roll_no_Entry.insert(0, row[6])
+            self.genderCombobox.set(row[7])
+            self.dobEntry.delete(0, END)
+            self.dobEntry.insert(0, row[8])
+            self.emailEntry.insert(0, row[9])
+            self.phoneNoEntry.insert(0, row[10])
+            self.addressEntry.insert(0, row[11])
+            self.var_photo.set(row[12])
+
+    #  save to database method
+    def save_to_database_method(self):
+        self.department = self.departmentCombobox.get()
+        self.course_dropdown = self.coursesCombobox.get()
+        self.year = self.yearCombobox.get()
+        self.semester = self.semesterCombobox.get()
+        self.student_id_no = self.studentidNoEntry.get()
+        self.student_name = self.studentNameEntry.get()
+        self.roll_no = self.roll_no_Entry.get()
+        self.gender = self.genderCombobox.get()
+        self.selectedDate = self.dobEntry.get_date()
+        self.email = self.emailEntry.get()
+        self.phoneNo = self.phoneNoEntry.get()
+        self.address = self.addressEntry.get()
+        self.var_radio = self.var_photo.get()
+
+        # self.searchEntry = self.searchEntry.get()
+
+        # validating data before inserting it to the database
+
+        # if (
+        #     self.departmentCombobox.current() == 0
+        #     or self.yearCombobox.current() == 0
+        #     or self.semesterCombobox.current() == 0
+        #     or self.coursesCombobox.current() == 0
+        #     or self.student_id_no == ""
+        #     or self.genderCombobox.current() == 0
+        #     or self.email == ""
+        #     or self.student_name == ""
+        #     or self.phoneNo == ""
+        # ):
+        #     messagebox.showerror("Error", "Please fill all the fields")
+        #     return
+
+        # # Checking student id number
+        # if not self.student_id_no.isdigit():
+        #     messagebox.showerror("Error", "Student ID number must be an integer")
+        #     return
+
+        # # checking email
+        # if not is_email_valid(self.email):
+        #     messagebox.showerror("Error", "Invalid email format")
+        #     return
+
+        # phone number checking
+        if not self.phoneNo.isdigit():
+            messagebox.showerror("Error", "Phone number should be a valid integer")
+            return
+
+        else:
+
+            try:
+                Database.create_table()
+                if not Database.checking_user_existence(self.student_id_no):
+                    self.data_insertion()
+                    Database.inserting_into_Database(
+                        self.department,
+                        self.course_dropdown,
+                        self.year,
+                        self.semester,
+                        self.student_id_no,
+                        self.student_name,
+                        self.roll_no,
+                        self.gender,
+                        self.selectedDate,
+                        self.email,
+                        self.phoneNo,
+                        self.address,
+                        self.var_radio,
+                    )
+
+                    messagebox.showinfo("success", "Student details added successfully")
+                    self.reset_method2()
+
+                else:
+                    messagebox.showerror("Error", "user already Exists")
+
+            except Exception as e:
+                print(e)
+                messagebox.showerror("Error", f"{e}")
+
+    # delete Method
+    def delete_method(self):
+        selected_item = self.student_table.focus()
+
+        if not selected_item:
+            messagebox.showerror("Error", "Please select a record to delete")
+            return
+        else:
+            response = messagebox.askyesno(
+                "Confirm",
+                "Do you really want to delete the record? \n Note: The record will be deleted permanently",
+            )
+
+            if response:
+                try:
+                    results = self.student_table.item(selected_item, "values")[4]
+                    Database.delete_user(results)
+                    self.reset_method()
+                    self.fetch_data()
+                except Exception as e:
+                    print(e)
+                    messagebox.showerror("Error", f"{e}")
+
+    # update method
+    def update_method(self):
+
+        selected_item = self.student_table.focus()
+        if not selected_item:
+            messagebox.showerror(
+                "Failed!", "Please select in the table a student to update."
+            )
+        else:
+            try:
+
+                # Retrieve updated values from entry fields BEFORE validation
+                self.student_id_no = self.studentidNoEntry.get()
+                self.student_name = self.studentNameEntry.get()
+                self.department = self.departmentCombobox.get()
+                self.course_dropdown = self.coursesCombobox.get()
+                self.year = self.yearCombobox.get()
+                self.semester = self.semesterCombobox.get()
+                self.roll_no = self.roll_no_Entry.get()
+                self.gender = self.genderCombobox.get()
+                self.selectedDate = self.dobEntry.get()
+                self.email = self.emailEntry.get()
+                self.phoneNo = self.phoneNoEntry.get()
+                self.address = self.addressEntry.get()
+                self.var_radio = self.var_photo.get()
+
+                # validating data before inserting it to the database
+
+                if (
+                    self.departmentCombobox.current() == 0
+                    or self.yearCombobox.current() == 0
+                    or self.semesterCombobox.current() == 0
+                    or self.coursesCombobox.current() == 0
+                    or self.student_id_no == ""
+                    or self.genderCombobox.current() == 0
+                    or self.email == ""
+                    or self.student_name == ""
+                    or self.phoneNo == ""
+                ):
+                    messagebox.showerror("Error", "Please fill all the fields")
+                    return
+
+                # # Checking student id number
+                if not self.student_id_no.isdigit():
+                    messagebox.showerror(
+                        "Error", "Student ID number must be an integer"
+                    )
+                    return
+
+                # # checking email
+                if not is_email_valid(self.email):
+                    messagebox.showerror("Error", "Invalid email format")
+                    return
+
+                # phone number checking
+                if not self.phoneNo.isdigit():
+                    messagebox.showerror(
+                        "Error", "Phone number should be a valid integer"
+                    )
+                    return
+
+                else:
+
+                    Database.update_database(
+                        self.department,
+                        self.course_dropdown,
+                        self.year,
+                        self.semester,
+                        self.student_id_no,
+                        self.student_name,
+                        self.roll_no,
+                        self.gender,
+                        self.selectedDate,
+                        self.email,
+                        self.phoneNo,
+                        self.address,
+                        self.var_radio,
+                    )
+                    # inserting the updated data in to the table
+                    self.data_insertion()
+                    messagebox.showinfo(
+                        "Success",
+                        f"{self.student_name} with {self.student_id_no}, updated successfully!",
+                    )
+                    print("succcessfully!!!!!!!")
+            except Exception as e:
+                print(e)
+                messagebox.showerror("Error", f"{e}")
+
+    # fetch data method
+    def fetch_data(self):
+        data = Database.data_fetching_from_database()
+        if len(data) != 0:
+            self.student_table.delete(
+                *self.student_table.get_children()
+            )  # deletes all the rows in the tables
+            for i in data:
+                self.student_table.insert("", END, values=i)
+
+    # Generate data set or take photo samples
+    def generate_dataset(self):
+        self.student_id_no = self.studentidNoEntry.get()
+        self.student_name = self.studentNameEntry.get()
+        self.department = self.departmentCombobox.get()
+        self.course_dropdown = self.coursesCombobox.get()
+        self.year = self.yearCombobox.get()
+        self.semester = self.semesterCombobox.get()
+        self.roll_no = self.roll_no_Entry.get()
+        self.gender = self.genderCombobox.get()
+        self.selectedDate = self.dobEntry.get()
+        self.email = self.emailEntry.get()
+        self.phoneNo = self.phoneNoEntry.get()
+        self.address = self.addressEntry.get()
+        self.var_radio = self.var_photo.get()
+
+        # validating data before inserting it to the database
+
+        if (
+            self.departmentCombobox.current() == 0
+            or self.yearCombobox.current() == 0
+            or self.semesterCombobox.current() == 0
+            or self.coursesCombobox.current() == 0
+            or self.student_id_no == ""
+            or self.genderCombobox.current() == 0
+            or self.email == ""
+            or self.student_name == ""
+            or self.phoneNo == ""
+        ):
+            messagebox.showerror("Error", "Please fill all the fields")
+            return
+        else:
+    #         try:
+    #             conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    #             cursor = conn.cursor()
+    #             cursor.execute("use students")
+    #             cursor.execute("select * from student_details")
+    #             results = cursor.fetchall()
+    #             id = 0
+    #             for x in results:
+    #                 id += 1
+
+    #             query = """ update student_details set department = %s, course = %s, year = %s, semester = %s, studentName = %s, rollNo = %s, 
+    # gender = %s, dob = %s, email = %s, phoneNo = %s, address = %s, photo = %s where studentId=%s"""
+
+    #             values = (
+    #                     self.department,
+    #                     self.course_dropdown,
+    #                     self.year,
+    #                     self.semester,
+    #                     self.student_id_no ==id+1,
+    #                     self.student_name,
+    #                     self.roll_no,
+    #                     self.gender,
+    #                     self.selectedDate,
+    #                     self.email,
+    #                     self.phoneNo,
+    #                     self.address,
+    #                     self.var_radio,
+    #             )
+    #             cursor.execute(query, values)
+    #             conn.commit()
+    #             self.reset_method()
+    #             self.fetch_data()
+    #             conn.close()
+                
+
+                # ***************************** Loading predefined data on face frontals from opencv ***************
+                face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+                def face_cropped(img):
+                    gray =cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+                    # faces = is a list of detected faces in an image.
+                    # detectMultiScale() detects faces
+                    # scalling factor = 1.3
+                    # minimum neighbour = 5
+                    for (x,y,w,h) in faces:
+                        # x, y → Top-left corner of the face.
+                        # w, h → Width and height of the face.
+                        face_cropped =img[y:y+h, x:x+w] # Crop the detected face
+                        # The notation img[startY:endY, startX:endX] is array slicing in NumPy
+                        return face_cropped # Return only the face
+                    
+                capture = cv2.VideoCapture(0) # starting the webcam
+                img_id = 0  #counter for numbering saved images.
+
+                while True:
+                    return_status, my_frame = capture.read() # Capture a frame from the webcam
+                    # return_status = bolean i.e true or false
+                    #  myframe = actual frame/image
+
+                    # remember capture.read() always return two values, that is return and the frame 
+                    # return i.e return_status for checking if the camera is working, or is it busy and it return a bolean
+                    
+                    if not return_status or my_frame is None:
+                        print("Failed to capture image from camera.")
+                        break # Stop if no frame is captured
+
+                    cropped_face = face_cropped(my_frame)
+                    
+                    if cropped_face is not None:
+                        img_id += 1 # Increment image ID
+
+                        face = cv2.resize(cropped_face, (450, 450))  # Resize face to 450x450 pixels
+                        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)  # Convert face to grayscale
+                        
+                        file_name_path = "data/user." + str(self.student_id_no) + "." + str(img_id) + ".jpg"
+                        cv2.imwrite(file_name_path, face)  # Save the cropped face image    
+                        
+                        cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
+                        cv2.imshow("Cropped Face", face)
+
+                    if cv2.waitKey(1) == 13 or int(img_id) == 20:
+                        break
+
+                capture.release()
+                cv2.destroyAllWindows()
+                messagebox.showinfo("Results", "Taking Photo Samples Completed!!!!")
+
+   
+
+    # *********************************** END OF FUNCTION DECLARATION***********************************
+
+    def __init__(self, mainWindow):
+        self.student_id_no = ""
+        self.window = mainWindow
+        self.window.geometry("1260x1000+0+0")
         self.mainMethod()
         self.window.mainloop()
 
 
 if __name__ == "__main__":
-    main_student_window = Student()
+    root = CTk()
+    Student(root)
