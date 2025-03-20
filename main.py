@@ -4,21 +4,23 @@ from tkinter import Tk, Label, Button, Toplevel
 from customtkinter import *
 import tk
 from Student import Student
+from train import TrainClass
+from attendance import Attendance
+
+
 
 # from Animal import Student
 
 
-
 def resize_method(imagePath, imageSize):
     currentImage = Image.open(imagePath)
-    resizedImage = currentImage.resize(imageSize,Image.LANCZOS)
+    resizedImage = currentImage.resize(imageSize, Image.LANCZOS)
     return ImageTk.PhotoImage(resizedImage)
 
 
-class Face_Recognition_System:
+class FaceRecognitionSystem:
 
     def mainMethod(self):
-
         # first Image
         imagePath = "college_images/top1.jpg"
         imageSize = (420, 130)
@@ -42,13 +44,13 @@ class Face_Recognition_System:
 
         # Back ground Image
         imagePath = "college_images/wp2551980.jpg"
-        imageSize = (1260, 710)
+        imageSize = (1260, 800)
         self.bgPhotoImage3 = resize_method(imagePath, imageSize)
         self.bgimagelabel = Label(
             self.root,
-            image=self.bgPhotoImage3,
+            image=self.bgPhotoImage3, borderwidth=2, relief=GROOVE
         )
-        self.bgimagelabel.place(x=0, y=130, width=1260, height=710)
+        self.bgimagelabel.place(x=0, y=130, width=1260, height=800)
 
         # System Title
         self.systemTitle = CTkLabel(
@@ -71,7 +73,7 @@ class Face_Recognition_System:
         self.photoImage4 = resize_method(imagePath, imageSize)
 
         self.studentButton1 = Button(
-            self.bgimagelabel, command=self.student_details_method,
+            self.bgimagelabel, #command=self.student_details_method,
             image=self.photoImage4,
             width=180,
             height=180,
@@ -82,7 +84,7 @@ class Face_Recognition_System:
 
         # Student Button text
         self.studentBtn1text = Button(
-            self.bgimagelabel, command=self.student_details_method,
+            self.bgimagelabel, #command=self.student_details_method,
             text="Student Details",
             cursor="hand2",
             border=None,
@@ -106,7 +108,7 @@ class Face_Recognition_System:
             width=180,
             height=180,
             cursor="hand2",
-            border=None,
+            border=None, command=self.student_details_method
         )
         self.faceDetectorButton.place(x=400, y=100)
 
@@ -121,7 +123,7 @@ class Face_Recognition_System:
             foreground="white",
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
-            activeforeground="white",
+            activeforeground="white",command=self.student_details_method
         )
         self.faceDetectorBtn1text.place(x=400, y=280, width=186, height=30)
 
@@ -136,7 +138,7 @@ class Face_Recognition_System:
             width=180,
             height=180,
             cursor="hand2",
-            border=None,
+            border=None, command=self.attendance_method
         )
         self.attendaceButton1.place(x=690, y=100)
 
@@ -151,7 +153,7 @@ class Face_Recognition_System:
             foreground="white",
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
-            activeforeground="white",
+            activeforeground="white", command=self.attendance_method
         )
         self.attendanceBtn1text.place(x=690, y=280, width=186, height=30)
 
@@ -197,6 +199,8 @@ class Face_Recognition_System:
             height=180,
             cursor="hand2",
             border=None,
+            command=self.train_data_method
+
         )
         self.trainDataButton1.place(x=120, y=370)
 
@@ -212,6 +216,7 @@ class Face_Recognition_System:
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
             activeforeground="white",
+            command=self.train_data_method
         )
         self.trainDataBtn1text.place(x=120, y=550, width=186, height=30)
 
@@ -288,7 +293,7 @@ class Face_Recognition_System:
             width=180,
             height=180,
             cursor="hand2",
-            border=None,
+            border=None,command=self.root.quit
         )
         self.exitButton1.place(x=970, y=370)
 
@@ -303,32 +308,67 @@ class Face_Recognition_System:
             foreground="white",
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
-            activeforeground="white",
+            activeforeground="white", command=self.root.quit
         )
         self.exitBtn1text.place(x=970, y=550, width=186, height=30)
 
-    def __init__(self, root):
-        self.root = root
-        
+    def __init__(self):
+        self.root = CTk()
+
         self.root.wm_overrideredirect(True)
-        self.root.geometry("1260x790+0+0")
+        # self.root.geometry("1260x790+0+0")
+        self.frame_position()
         self.root.title("Face Recognition System")
+        self.root.grab_set()
         self.mainMethod()
-        
-       
+
+        self.root.mainloop()
+
+
+    # Positioning the frame at the center of the screen
+    def frame_position(self):
+        # Get screen width and height
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+
+        # Window dimensions
+        window_width = 1260
+        window_height = 900
+
+        # Calculate x and y positions to center the window
+        x_position = (screen_width // 2) - (window_width // 2)
+        y_position = (screen_height // 2) - (window_height // 2)
+        self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+
+
+
+
     # **********************************Functions buttons*********************************
 
     def student_details_method(self):
-        self.app = Student(self.root)
-    
+        # self.root.withdraw()  # Hide the main window temporarily
+        self.train_window = Toplevel(self.root)
+        TrainClass(self.train_window)
+        # self.train_window.grab_set()
+        # self.root.wait_window(self.train_window)  # Wait until train.py is closed
+        # self.root.deiconify()  # Show main window again
+        # self.root.focus_force()  # Ensure it regains focus
+
     def open_image(self):
         os.startfile("data")
-        
+
+    def train_data_method(self):
+        self.root.withdraw()
+        self.train_window =Toplevel(self.root)
+        TrainClass(self.train_window)
+        self.train_window.grab_set()
+    def attendance_method(self):
+        self.attendance = Toplevel(self.root)
+        Attendance(self.attendance)
 
 
 if __name__ == "__main__":
-    root=CTk()
+    
 
-    Face_Recognition_System(root)
-    root.mainloop()
+    FaceRecognitionSystem()
     

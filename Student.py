@@ -28,6 +28,33 @@ def is_email_valid(email):
 
 class Student:
 
+    def __init__(self, parent):
+        self.window = parent
+        self.student_id_no = ""
+        self.window.grab_set()
+        self.frame_position()
+        # self.window.wm_overrideredirect(True)
+        self.mainMethod()
+
+
+    
+    # Positioning the frame at the center of the screen
+    def frame_position(self):
+        # Get screen width and height
+        screen_width = self.window.winfo_screenwidth()
+        screen_height = self.window.winfo_screenheight()
+
+        # Window dimensions
+        window_width = 1260
+        window_height = 800
+
+        # Calculate x and y positions to center the window
+        x_position = (screen_width // 2) - (window_width // 2)
+        y_position = (screen_height // 2) - (window_height // 2)
+        self.window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+
+
+
     def mainMethod(self):
 
         # -------------------- VARIABLES ---------------------
@@ -97,18 +124,18 @@ class Student:
         self.backButton = customtkinter.CTkButton(
             self.bgimagelabel,
             text="Back",
-            command=self.back_method,
+            
             text_color="#FFFFFF",
-            bg_color="#FFF",
+            bg_color="darkblue",
             fg_color="#36719F",
-            height=25,
+            height=30,
             corner_radius=25,
             width=130,
             cursor="hand2",
             hover_color="#FF4505",
-            font=("arial", 14),
+            font=("arial", 14),command=self.back_method
         )
-        self.backButton.place(x=1170, y=-2)
+        self.backButton.place(x=1100, y=3)
 
         # creating the Main Frame inside the "self.bgImagelabel"
         self.student_Main_Frame = CTkFrame(
@@ -760,7 +787,13 @@ class Student:
     # ********************** fUNCTION DECLARATION ********************
 
     def back_method(self):
-        self.window.destroy()
+        response = messagebox.askyesno("Confirm", "Do you really want to quit?", parent=self.window)
+        if response:
+            # self.window.grab_release()
+            self.window.destroy()
+            # self.window.master.focus_set()
+            # self.root.master.deiconify()  # Ensure the main window is restored
+            # self.root.master.focus_force()
 
     def data_insertion(self):  # for inserting data into the table...
 
@@ -861,37 +894,37 @@ class Student:
         self.address = self.addressEntry.get()
         self.var_radio = self.var_photo.get()
 
-        # self.searchEntry = self.searchEntry.get()
+        self.searchEntry = self.searchEntry.get()
 
         # validating data before inserting it to the database
 
-        # if (
-        #     self.departmentCombobox.current() == 0
-        #     or self.yearCombobox.current() == 0
-        #     or self.semesterCombobox.current() == 0
-        #     or self.coursesCombobox.current() == 0
-        #     or self.student_id_no == ""
-        #     or self.genderCombobox.current() == 0
-        #     or self.email == ""
-        #     or self.student_name == ""
-        #     or self.phoneNo == ""
-        # ):
-        #     messagebox.showerror("Error", "Please fill all the fields")
-        #     return
+        if (
+            self.departmentCombobox.current() == 0
+            or self.yearCombobox.current() == 0
+            or self.semesterCombobox.current() == 0
+            or self.coursesCombobox.current() == 0
+            or self.student_id_no == ""
+            or self.genderCombobox.current() == 0
+            or self.email == ""
+            or self.student_name == ""
+            or self.phoneNo == ""
+        ):
+            messagebox.showerror("Error", "Please fill all the fields", parent=self.window)
+            return
 
-        # # Checking student id number
-        # if not self.student_id_no.isdigit():
-        #     messagebox.showerror("Error", "Student ID number must be an integer")
-        #     return
+        # Checking student id number
+        if not self.student_id_no.isdigit():
+            messagebox.showerror("Error", "Student ID number must be an integer", parent=self.window)
+            return
 
-        # # checking email
-        # if not is_email_valid(self.email):
-        #     messagebox.showerror("Error", "Invalid email format")
-        #     return
+        # checking email
+        if not is_email_valid(self.email):
+            messagebox.showerror("Error", "Invalid email format", parent=self.window)
+            return
 
         # phone number checking
         if not self.phoneNo.isdigit():
-            messagebox.showerror("Error", "Phone number should be a valid integer")
+            messagebox.showerror("Error", "Phone number should be a valid integer",parent=self.window)
             return
 
         else:
@@ -916,27 +949,27 @@ class Student:
                         self.var_radio,
                     )
 
-                    messagebox.showinfo("success", "Student details added successfully")
+                    messagebox.showinfo("success", "Student details added successfully", parent=self.window)
                     self.reset_method2()
 
                 else:
-                    messagebox.showerror("Error", "user already Exists")
+                    messagebox.showerror("Error", "user already Exists",parent=self.window)
 
             except Exception as e:
                 print(e)
-                messagebox.showerror("Error", f"{e}")
+                messagebox.showerror("Error", f"{e}", parent=self.window)
 
     # delete Method
     def delete_method(self):
         selected_item = self.student_table.focus()
 
         if not selected_item:
-            messagebox.showerror("Error", "Please select a record to delete")
+            messagebox.showerror("Error", "Please select a record to delete", parent=self.window)
             return
         else:
             response = messagebox.askyesno(
                 "Confirm",
-                "Do you really want to delete the record? \n Note: The record will be deleted permanently",
+                "Do you really want to delete the record? \n Note: The record will be deleted permanently", parent=self.window
             )
 
             if response:
@@ -955,7 +988,7 @@ class Student:
         selected_item = self.student_table.focus()
         if not selected_item:
             messagebox.showerror(
-                "Failed!", "Please select in the table a student to update."
+                "Failed!", "Please select in the table a student to update.", parent=self.window
             )
         else:
             try:
@@ -988,25 +1021,25 @@ class Student:
                     or self.student_name == ""
                     or self.phoneNo == ""
                 ):
-                    messagebox.showerror("Error", "Please fill all the fields")
+                    messagebox.showerror("Error", "Please fill all the fields", parent=self.window)
                     return
 
                 # # Checking student id number
                 if not self.student_id_no.isdigit():
                     messagebox.showerror(
-                        "Error", "Student ID number must be an integer"
+                        "Error", "Student ID number must be an integer", parent=self.window
                     )
                     return
 
                 # # checking email
                 if not is_email_valid(self.email):
-                    messagebox.showerror("Error", "Invalid email format")
+                    messagebox.showerror("Error", "Invalid email format", parent=self.window)
                     return
 
                 # phone number checking
                 if not self.phoneNo.isdigit():
                     messagebox.showerror(
-                        "Error", "Phone number should be a valid integer"
+                        "Error", "Phone number should be a valid integer", parent=self.window
                     )
                     return
 
@@ -1031,12 +1064,12 @@ class Student:
                     self.data_insertion()
                     messagebox.showinfo(
                         "Success",
-                        f"{self.student_name} with {self.student_id_no}, updated successfully!",
+                        f"{self.student_name} with {self.student_id_no}, updated successfully!", parent=self.window
                     )
                     print("succcessfully!!!!!!!")
             except Exception as e:
                 print(e)
-                messagebox.showerror("Error", f"{e}")
+                messagebox.showerror("Error", f"{e}", parent=self.window)
 
     # fetch data method
     def fetch_data(self):
@@ -1077,7 +1110,7 @@ class Student:
             or self.student_name == ""
             or self.phoneNo == ""
         ):
-            messagebox.showerror("Error", "Please fill all the fields")
+            messagebox.showerror("Error", "Please fill all the fields", parent=self.window)
             return
         else:
     #         try:
@@ -1165,20 +1198,15 @@ class Student:
 
                 capture.release()
                 cv2.destroyAllWindows()
-                messagebox.showinfo("Results", "Taking Photo Samples Completed!!!!")
+                messagebox.showinfo("Results", "Taking Photo Samples Completed!!!!", parent=self.window)
 
    
 
     # *********************************** END OF FUNCTION DECLARATION***********************************
 
-    def __init__(self, mainWindow):
-        self.student_id_no = ""
-        self.window = mainWindow
-        self.window.geometry("1260x1000+0+0")
-        self.mainMethod()
-        self.window.mainloop()
 
 
 if __name__ == "__main__":
     root = CTk()
     Student(root)
+    root.mainloop()
