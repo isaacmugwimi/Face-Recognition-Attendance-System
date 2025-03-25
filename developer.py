@@ -1,11 +1,5 @@
 from tkinter import *
-from tkinter import ttk
 from PIL import ImageTk, Image, ImageDraw
-from tkinter import messagebox
-import cv2
-import os
-import csv
-from tkinter import filedialog
 
 
 class Developer:

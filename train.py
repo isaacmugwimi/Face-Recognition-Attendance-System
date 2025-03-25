@@ -26,7 +26,7 @@ class TrainClass:
 
         # Window dimensions
         window_width = 800
-        window_height = 800
+        window_height = 700
 
         # Calculate x and y positions to center the window
         x_position = (screen_width // 2) - (window_width // 2)
@@ -68,7 +68,7 @@ class TrainClass:
         # second image
         img2 = Image.open("college_images/top2.jpeg").resize((300,150))
         self.my_image2=ImageTk.PhotoImage(img2)
-        self.img_label2 = Label(self.root, image=self.my_image2, relief=GROOVE, bd=2)
+        self.img_label2 = Label(self.root, image=self.my_image2, relief=GROOVE, bd=2, background="blue")
         self.img_label2.place(x=250, y=40, width=300, height=150)
 
         # Third image
@@ -80,19 +80,19 @@ class TrainClass:
 
         """including the train data button which launches the opencv """
         buttonFrame = Frame(self.root, bg="darkcyan")
-        buttonFrame.place(x=0, y=200, width=800, height=50)
+        buttonFrame.place(x=0, y=200, width=800, height=45)
         # Train Button
         self.train_data_button = CTkButton(
             buttonFrame, text="Train Data", fg_color="darkBlue",command=self.train_classifier,
-            font=("Ubuntu", 16, "bold"), anchor="center", width=250, height=40, cursor="hand2", 
+            font=("Ubuntu", 15, "bold"), anchor="center", width=250, height=33, cursor="hand2", 
         )
         self.train_data_button.pack(expand=True)
 
         # Background bottom Image
-        img4 = Image.open("college_images/facialrecognition (1).png").resize((800,560))
+        img4 = Image.open("college_images/facialrecognition (1).png").resize((795,450))
         self.my_image4=ImageTk.PhotoImage(img4)
-        self.img_label4 = Label(self.root, image=self.my_image4)
-        self.img_label4.place(x=0, y=250, width=800, height=560)
+        self.img_label4 = Label(self.root, image=self.my_image4,  background="blue")
+        self.img_label4.place(x=0, y=245, width=800, height=455)
 
     def back_method(self):
          response= messagebox.askyesno("Confirm", "Do you really want to quit?", parent=self.root)
@@ -131,6 +131,6 @@ class TrainClass:
       
 
 if __name__ == "__main__":
-        root = CTk()
+        root = Tk()
         app = TrainClass(root)
         root.mainloop()

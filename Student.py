@@ -1,18 +1,18 @@
-import os
 from tkinter import *
 import re
 from tkinter import RIDGE, W, Frame, StringVar, messagebox, ttk
 from tkinter.font import Font
 from tkinter.ttk import Combobox
 from PIL import Image, ImageTk
-from tkinter import Entry, Tk, Label, Button, LabelFrame
+from tkinter import Entry, Label, Button, LabelFrame
 from customtkinter import CTk, CTkLabel, CTkFrame
 import tkinter as tk
 import customtkinter
 from tkcalendar import DateEntry
 import Database
 import cv2
-import pymysql
+from time import strftime
+from datetime import datetime
 
 
 def resize_method(imagePath, imageSize):
@@ -118,9 +118,20 @@ class Student:
             font=("ubuntu", 25, "bold"),
         )
         self.systemTitle.place(
-            x=-2,
-            y=-2,
+            x=0,
+            y=0,
         )
+
+        """ Adding time method"""
+        def time_method():
+            string =strftime("%H:%M:%S %p")
+            time_label.config(text = string)
+            time_label.after(1000, time_method)
+
+        time_label = Label(self.bgimagelabel, font=("times new roman", 17, "bold"), background="white", foreground="blue",padx=10)
+        time_label.place(x=0, y=0, width=165, height=40, )
+        time_method()
+
         self.backButton = customtkinter.CTkButton(
             self.bgimagelabel,
             text="Back",
