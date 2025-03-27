@@ -1,12 +1,14 @@
 import pymysql
-
+import mysql.connector
 
 def create_table():
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("create database if not exists students")
     cursor.execute("use students")
-    query = """ create table if not exists student_details( department varchar(50), course varchar(50),
+    query = """ create table if not exists student_details( 
+                                     department varchar(50), 
+                                     course varchar(50),
                                      year varchar(50),
                                      semester varchar(20),
                                      studentId int primary key not null,
@@ -39,7 +41,7 @@ def update_database(
     address,
     var_radio,
 ):
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("use students")
     query = """ update student_details set department = %s, course = %s, year = %s, semester = %s, studentName = %s, rollNo = %s, 
@@ -70,7 +72,7 @@ def update_database(
 
 
 def checking_user_existence(studentIdNo):
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("use students")
     query = """ select * from student_details where studentId = %s """
@@ -95,7 +97,7 @@ def inserting_into_Database(
     address,
     var_radio,
 ):
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("use students")
     query = """INSERT INTO student_details 
@@ -124,7 +126,7 @@ def inserting_into_Database(
 
 
 def data_fetching_from_database():
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("use students")
     query = """select * from student_details """
@@ -136,7 +138,7 @@ def data_fetching_from_database():
 
 
 def delete_user(studentID):
-    conn = pymysql.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
     cursor = conn.cursor()
     cursor.execute("use students")
     query = """delete from student_details where studentId = %s"""

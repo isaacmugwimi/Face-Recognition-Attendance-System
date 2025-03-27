@@ -5,12 +5,13 @@ from tkinter import Tk, Label, Button, Toplevel
 from customtkinter import *
 import tk
 from Student import Student
-from train import TrainClass
+from train import Train
 from attendance import Attendance
 from developer import Developer
 from help import Help
 from time import strftime
 from datetime import datetime
+from face_recognitor import Face_Detector
 
 
 
@@ -88,7 +89,7 @@ class FaceRecognitionSystem:
         self.photoImage4 = resize_method(imagePath, imageSize)
 
         self.studentButton1 = Button(
-            self.bgimagelabel, #command=self.student_details_method,
+            self.bgimagelabel, command=self.student_details_method,
             image=self.photoImage4,
             width=180,
             height=180,
@@ -99,7 +100,8 @@ class FaceRecognitionSystem:
 
         # Student Button text
         self.studentBtn1text = Button(
-            self.bgimagelabel, #command=self.student_details_method,
+            self.bgimagelabel, 
+            command=self.student_details_method,
             text="Student Details",
             cursor="hand2",
             border=None,
@@ -123,7 +125,7 @@ class FaceRecognitionSystem:
             width=180,
             height=180,
             cursor="hand2",
-            border=None, command=self.student_details_method
+            border=None, command=self.face_detector_method
         )
         self.faceDetectorButton.place(x=400, y=100)
 
@@ -138,7 +140,7 @@ class FaceRecognitionSystem:
             foreground="white",
             font=("ubuntu", 13, "bold"),
             activebackground="blue",
-            activeforeground="white",command=self.student_details_method
+            activeforeground="white",command=self.face_detector_method
         )
         self.faceDetectorBtn1text.place(x=400, y=280, width=186, height=30)
 
@@ -366,14 +368,18 @@ class FaceRecognitionSystem:
         self.student = Toplevel(self.root)
         Student(self.student)
 
+    def face_detector_method(self):
+        self.face_detector = Toplevel(self.root)
+        Face_Detector(self.face_detector)
+
     def open_image(self):
         os.startfile("data")
 
     def train_data_method(self):
-        # self.root.withdraw()
         self.train_window =Toplevel(self.root)
-        TrainClass(self.train_window)
-        self.train_window.grab_set()
+        Train(self.train_window)
+        
+        
     def attendance_method(self):
         self.attendance = Toplevel(self.root)
         Attendance(self.attendance)
