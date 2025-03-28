@@ -41,9 +41,9 @@ def update_database(
     address,
     var_radio,
 ):
-    conn = mysql.connector.connect(host="localhost", user="root", password="isaac")
+    conn = mysql.connector.connect(host="localhost", user="root", password="isaac", database="students")
     cursor = conn.cursor()
-    cursor.execute("use students")
+    # cursor.execute("use students")
     query = """ update student_details set department = %s, course = %s, year = %s, semester = %s, studentName = %s, rollNo = %s, 
     gender = %s, dob = %s, email = %s, phoneNo = %s, address = %s, photo = %s where studentId=%s"""
 

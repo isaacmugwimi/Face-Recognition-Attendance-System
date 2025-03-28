@@ -50,7 +50,7 @@ class Student:
 
         # Calculate x and y positions to center the window
         x_position = (screen_width // 2) - (window_width // 2)
-        y_position = (screen_height // 2) - (window_height // 2)
+        y_position = (screen_height // 2) - (window_height // 2)-100
         self.window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 

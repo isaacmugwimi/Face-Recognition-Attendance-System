@@ -15,9 +15,6 @@ from face_recognitor import Face_Detector
 
 
 
-# from Animal import Student
-
-
 def resize_method(imagePath, imageSize):
     currentImage = Image.open(imagePath)
     resizedImage = currentImage.resize(imageSize, Image.LANCZOS)
@@ -356,7 +353,7 @@ class FaceRecognitionSystem:
 
         # Calculate x and y positions to center the window
         x_position = (screen_width // 2) - (window_width // 2)
-        y_position = (screen_height // 2) - (window_height // 2)
+        y_position = (screen_height // 2) - (window_height // 2)-100
         self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 
@@ -371,6 +368,9 @@ class FaceRecognitionSystem:
     def face_detector_method(self):
         self.face_detector = Toplevel(self.root)
         Face_Detector(self.face_detector)
+
+        # self.developer = Toplevel(self.root)
+        # ImageTester(self.developer)
 
     def open_image(self):
         os.startfile("data")
@@ -387,6 +387,9 @@ class FaceRecognitionSystem:
     def developer_method(self):
         self.developer = Toplevel(self.root)
         Developer(self.developer)
+
+        
+
 
     def help_method(self):
         self.help = Toplevel(self.root)

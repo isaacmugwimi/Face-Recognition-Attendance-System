@@ -62,7 +62,7 @@ class Face_Detector:
         right_image_label.place(x=405, y=0, height=645, width=800)
 
         # face detector button
-        self.back_button = Button(
+        self.face_detect_button = Button(
             right_image_label,
             text="Face Detector",
             foreground="white",
@@ -75,7 +75,7 @@ class Face_Detector:
             cursor="hand2",
             command=self.face_dection_method,
         )
-        self.back_button.place(x=320, y=570, width=170, height=40)
+        self.face_detect_button.place(x=320, y=570, width=170, height=40)
 
     def frame_position(self):
         # Get screen width and height

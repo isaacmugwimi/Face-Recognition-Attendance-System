@@ -459,15 +459,24 @@ class Attendance:
 
     def get_table_content(self, event=""):
         table_row = self.attendance_report_table.focus()
-        content = self.attendance_report_table.item(table_row)
-        rows = content["values"]
-        self.var_attendance_id.set(rows[0])
-        self.var_attendance_roll.set(rows[1])
-        self.var_attendance_name.set(rows[2])
-        self.var_attendance_department.set(rows[3])
-        self.var_attendance_time.set(rows[4])
-        self.var_attendance_date.set(rows[5])
-        self.var_attendance_status.set(rows[6])
+
+        # selected_item = self.attendance_report_table.focus()
+        if not table_row:
+            messagebox.showerror(
+                "Failed!", "No item selected in the table", parent=self.root
+            )
+            return
+
+        else:
+            content = self.attendance_report_table.item(table_row)
+            rows = content["values"]
+            self.var_attendance_id.set(rows[0])
+            self.var_attendance_roll.set(rows[1])
+            self.var_attendance_name.set(rows[2])
+            self.var_attendance_department.set(rows[3])
+            self.var_attendance_time.set(rows[4])
+            self.var_attendance_date.set(rows[5])
+            self.var_attendance_status.set(rows[6])
 
     def reset_data(self):
         self.var_attendance_id.set("")

@@ -21,7 +21,7 @@ class Developer:
         )
         systemTitle.place(x=0, y=0, width=1100, height=40)
 
-        main_frame = Frame(self.root, bg="blue", borderwidth=2, height=600, width=540)
+        main_frame = Frame(self.root, bg="blue", borderwidth=2)
         main_frame.place(x=0, y=50, width=1100, height=600)
 
         top_image = Image.open(r"college_images/dev.jpg").resize((600, 600))

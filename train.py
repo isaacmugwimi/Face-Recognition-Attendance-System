@@ -7,14 +7,13 @@ import numpy as np
 
 
 class Train:
-    def __init__(self, parent):
-        self.root = parent
+    
+    def __init__(self, root):
+        self.root = root
         self.root.title("Images")
         self.frame_position()
         self.root.wm_overrideredirect(True)
-        # self.root.geometry("800x800")
-        # self.root.grab_set()
-        self.root.transient(self.root.master)
+        # self.root.transient(self.root.master)
         self.train_method()
 
         # self.root.mainloop()
@@ -31,8 +30,14 @@ class Train:
 
         # Calculate x and y positions to center the window
         x_position = (screen_width // 2) - (window_width // 2)
-        y_position = (screen_height // 2) - (window_height // 2)
+        y_position = (screen_height // 2) - (window_height // 2) -80
         self.root.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+
+        # Explanation:
+        # 1. (screen_height // 2) gets the midpoint of the screen vertically.
+        # 2. (window_height // 2) gets half of the window's height.
+        # 3. Subtracting them centers the window vertically.
+        # 4. The additional "-80" shifts the window upward by 80 pixels.
 
     def train_method(self):
 
@@ -117,12 +122,7 @@ class Train:
             "Confirm", "Do you really want to quit?", parent=self.root
         )
         if response:
-            self.root.grab_release()
             self.root.destroy()
-
-        # self.root.destroy()  # Close TrainClass window
-        # self.root.master.deiconify()  # Restore the main window
-        # self.root.master.focus_force()  # Bring the main window to the foreground
 
     def train_classifier(self):
         data_dir = "data"
