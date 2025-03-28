@@ -1204,7 +1204,7 @@ class Student:
                         cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
                         cv2.imshow("Cropped Face", face)
 
-                    if cv2.waitKey(1) == 13 or int(img_id) == 20:
+                    if cv2.waitKey(1) == 13 or int(img_id) == 50:
                         break
 
                 capture.release()

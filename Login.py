@@ -1,15 +1,13 @@
 import re
 from tkinter import *
 from tkinter import messagebox
-
+import webbrowser
 # from ctypes import windll
 import mysql.connector
 import customtkinter
 from PIL import Image
 from PIL import ImageTk
-
-# from MainApp import Main
-
+from main import FaceRecognitionSystem
 
 def resize_image(image_path, new_size):
     original_image = Image.open(image_path)
@@ -36,7 +34,7 @@ class Login:
         self.email = self.email_label_entry.get()
         password = self.password_label_entry.get()
         confirmPassword = self.confirm_password_label_entry.get()
-        id_no = self.id_no_no_label_entry.get()
+        id_no = self.id_no_label_entry.get()
 
         if (
             firstName == ""
@@ -51,7 +49,7 @@ class Login:
         elif not id_no.isdigit():
             messagebox.showerror(
                 "Error",
-                '"id_no Number" should be a valid number',
+                '"Id Number" should be a valid number',
             )
         elif not password == confirmPassword:
             messagebox.showerror(
@@ -164,8 +162,8 @@ class Login:
                     else:
                         # messagebox.showinfo("Welcome", "Login is Successful")
                         self.window.destroy()
-                        # from BillApp import BillApp
-                        # BillApp()
+                        # from main import FaceRecognitionSystem
+                        FaceRecognitionSystem()
 
             except Exception as e:
                 print(e)
@@ -196,10 +194,10 @@ class Login:
         headerFrame.place(x=400, y=50)
 
         # *************************** creating details for the header Frame *******************
-        new_size = (125, 125)
-        self.systemLogo = resize_image("images2/attnlgr.png", new_size)
+        new_size = (125, 200)
+        self.systemLogo = resize_image("images2/attnlg2 (1).png", new_size)
         systemLogoLabel = Label(headerFrame, image=self.systemLogo, bg="#1D2328")
-        systemLogoLabel.place(x=5, y=145)
+        systemLogoLabel.place(x=5, y=100, height=200)
         headerLabel = customtkinter.CTkLabel(
             headerFrame,
             text="Smart",
@@ -225,12 +223,12 @@ class Login:
 
         # *************************** creating details for the header Frame *******************
         new_size = (125, 125)
-        self.systemLogo3 = resize_image("images2/fin.png", new_size)
+        self.systemLogo3 = resize_image("images2/attnlg2 (1).png", new_size)
         systemLogoLabel = Label(self.headerFrame2, image=self.systemLogo3, bg="#15191C")
         systemLogoLabel.place(x=5, y=175)
         headerLabel = customtkinter.CTkLabel(
             self.headerFrame2,
-            text="Smart Collections",
+            text="Smart",
             font=("mv boli", 30),
             fg_color="#15191C",
             text_color="#8DB22A",
@@ -238,12 +236,12 @@ class Login:
         headerLabel.place(x=125, y=205)
         headerLabel2 = customtkinter.CTkLabel(
             self.headerFrame2,
-            text="Billing System",
+            text="Attendance System",
             font=("mv boli", 26),
             fg_color="#15191C",
             text_color="#8DB22A",
         )
-        headerLabel2.place(x=170, y=245)
+        headerLabel2.place(x=150, y=245)
 
     def quitMethod(self):
 
@@ -331,7 +329,7 @@ class Login:
         systemLogoLabel2.place(x=50, y=0)
         headerLabel = customtkinter.CTkLabel(
             self.register_frame,
-            text="Smart Collections",
+            text="Smart",
             font=("mv boli", 26),
             fg_color="#1D2328",
             text_color="#8DB22A",
@@ -339,7 +337,7 @@ class Login:
         headerLabel.place(x=130, y=10)
         headerLabel2 = customtkinter.CTkLabel(
             self.register_frame,
-            text="Billing System",
+            text="Attendance System",
             font=("mv boli", 21),
             fg_color="#1D2328",
             text_color="#8DB22A",
@@ -388,15 +386,15 @@ class Login:
         )
         self.last_name_label_entry.place(x=210, y=120)
 
-        id_no_no_label = customtkinter.CTkLabel(
+        id_no_label = customtkinter.CTkLabel(
             self.register_frame,
             text="id_no Number",
             font=("arial", 15),
             fg_color="#1D2328",
             text_color="#8DB22A",
         )
-        id_no_no_label.place(x=105, y=160)
-        self.id_no_no_label_entry = customtkinter.CTkEntry(
+        id_no_label.place(x=105, y=160)
+        self.id_no_label_entry = customtkinter.CTkEntry(
             self.register_frame,
             border_color="#8DB22A",
             width=240,
@@ -407,7 +405,7 @@ class Login:
             corner_radius=20,
             text_color="#8DB22A",
         )
-        self.id_no_no_label_entry.place(x=90, y=185)
+        self.id_no_label_entry.place(x=90, y=185)
 
         email_label = customtkinter.CTkLabel(
             self.register_frame,
@@ -426,7 +424,7 @@ class Login:
             font=("arial", 15),
             fg_color="#15191C",
             corner_radius=20,
-            text_color="#8DB22A",
+            text_color="#fff",
         )
         self.email_label_entry.place(x=90, y=245)
 
@@ -448,7 +446,7 @@ class Login:
             font=("arial", 15),
             fg_color="#15191C",
             corner_radius=20,
-            text_color="#8DB22A",
+            text_color="white",
         )
         self.password_label_entry.place(x=90, y=305)
 
@@ -470,7 +468,7 @@ class Login:
             font=("arial", 15),
             fg_color="#15191C",
             corner_radius=20,
-            text_color="#8DB22A",
+            text_color="#fff",
         )
         self.confirm_password_label_entry.place(x=90, y=365)
 
@@ -544,12 +542,15 @@ class Login:
 
         if id_no == "" or newPassword == "" or confirmPassword == "":
             messagebox.showerror("Error", "All fields are required")
+            return
 
         elif not id_no.isdigit():
             messagebox.showerror("Error", "Invalid id_no Number")
+            return
 
         elif newPassword != confirmPassword:
             messagebox.showerror("Error", "Password Mismatch")
+            return
 
         else:
             try:
@@ -560,7 +561,6 @@ class Login:
                     database="lecturer",
                 )
                 cursor = connection.cursor()
-                cursor.execute("use lecturer")
                 query = "select * from user_logins where idNo= %s"
                 cursor.execute(query, (id_no,))
                 row = cursor.fetchone()
@@ -599,7 +599,7 @@ class Login:
 
         header_label_id_no = customtkinter.CTkLabel(
             self.forgotPasswordFrame,
-            text="id_no No",
+            text="id No",
             bg_color="#15191C",
             text_color="#9AC72F",
             font=("arial", 13),
@@ -755,6 +755,7 @@ class Login:
             fg="#15191C",
             cursor="hand2",
             bd=0,
+            command=lambda:webbrowser.open("https://www.twitter.com")
         )
         self.twitterButton.bind(
             "<Enter>",
@@ -775,6 +776,7 @@ class Login:
             fg="#15191C",
             bd=0,
             cursor="hand2",
+            command=lambda:webbrowser.open("https://www.facebook.com")
         )
         self.faceBookButton.bind(
             "<Enter>", lambda event: self.faceBookButton.configure(image=self.faceBook2)
@@ -793,6 +795,7 @@ class Login:
             fg="#15191C",
             bd=0,
             cursor="hand2",
+            command=lambda:webbrowser.open("https://www.instagram.com")
         )
         self.instagramButton.bind(
             "<Enter>",
@@ -813,6 +816,7 @@ class Login:
             fg="#15191C",
             bd=0,
             cursor="hand2",
+            command=lambda:webbrowser.open("https://www.youtube.com")
         )
         self.youtubeButton.bind(
             "<Enter>",
@@ -833,6 +837,7 @@ class Login:
             fg="#15191C",
             bd=0,
             cursor="hand2",
+            command=lambda:webbrowser.open("https://www.gmail.com")
         )
         self.gmailButton.bind(
             "<Enter>", lambda event: self.gmailButton.configure(image=self.gmailImage2)

@@ -50,9 +50,7 @@ def bar():
         time.sleep(0.03)
         r = r + 1
     splash_root.destroy()
-    # main_window()
-
-
+    Login()
 frame = Frame(splash_root, width=430, height=300, background='#15191C')
 frame.place(x=0, y=0)
 
